@@ -6,8 +6,10 @@ import React from "react";
   import ChloeImg from "../../../assets/images/chloe.png";
   import BradenImg from "../../../assets/images/braden.png";
   import HyrumImg from "../../../assets/images/hyrum.png";
+  import Blob2 from "../../../assets/images/blob-2.svg";
 
   const Container = styled.div`
+    
     ${tw`
       w-full
       flex
@@ -48,7 +50,6 @@ import React from "react";
   const Step = styled.div`
     ${tw`
       flex
-      rounded-lg
     `};
   `;
   
@@ -57,6 +58,7 @@ import React from "react";
       text-secondary
       text-xl
       font-semibold
+      pt-5
     `};
   `;
   
@@ -67,6 +69,8 @@ import React from "react";
       md:text-sm
       text-center
       text-black
+      pt-2
+      pb-12
     `};
   `;
   
@@ -77,6 +81,16 @@ import React from "react";
         max-width: fit-content;
     }
   `;
+  const StandaloneImg = styled.div`
+    ${tw`
+        w-full
+    `};
+    img {
+        width: 100%;
+        height: 100%;
+        
+    }
+    `;
   
   export function Team() {
     return (
@@ -138,6 +152,10 @@ import React from "react";
             </StepDescription>
           </StepContainer>
         </StepsContainer>
+        <StandaloneImg>
+        <img src={Blob2} />
+        </StandaloneImg>
       </Container>
+      
     );
   }

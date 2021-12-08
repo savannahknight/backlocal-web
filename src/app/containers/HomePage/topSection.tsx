@@ -3,7 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 import BuildingsImg from "../../../assets/images/buildings.png";
-import BlobImg from "../../../assets/images/blob.svg";
+import BlobImg from "../../../assets/images/blob-1.svg";
 import { SCREENS } from "../../components/responsive";
 import { Button } from "../../components/button";
 
@@ -41,14 +41,9 @@ const RightContainer = styled.div`
 `;
 
 const Slogan = styled.h1`
+    font-size: 96px;
     ${tw`
         font-bold
-        text-2xl
-        xl:text-6xl
-        sm:text-3xl
-        md:text-5xl
-        lg:font-black
-        md:font-extrabold
         text-primary
         mb-4
         sm:leading-snug
@@ -58,10 +53,8 @@ const Slogan = styled.h1`
 `;
 
 const Description = styled.p`
+    font-size: 18px;
     ${tw`
-        text-xs
-        lg:text-sm
-        xl:text-lg
         sm:max-h-full
         overflow-hidden
         max-h-12
@@ -101,7 +94,7 @@ const BlobContainer = styled.div`
         width: 70em;
         max-height: 30em;
         right: -15em;
-        top: -25em;
+        top: -20em;
         transform: rotate(-20deg);
     }
 `;
@@ -139,7 +132,7 @@ const StandaloneImg = styled.div`
 const ButtonsContainer = styled.div`
     ${tw`
         flex
-        mt-4
+        mt-6
         flex-wrap
     `};
 `;
@@ -155,8 +148,8 @@ export function TopSection() {
             chain stores by integrating local store’s inventory with Google Merchant Store. 
             </Description>
             <ButtonsContainer>
-                <Button text= "Sign Up" />
-                <Button theme="filled" text="Log In" />
+                <Button text= "REQUEST A DEMO" />
+                {/* <Button theme="filled" text="Log In" /> */}
             </ButtonsContainer>
         </LeftContainer>
         <RightContainer>

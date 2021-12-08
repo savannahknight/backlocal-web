@@ -13,10 +13,8 @@ const LogoContainer = styled.div`
 `;
 
 const LogoText = styled.div`
+    font-size: 36px;
     ${tw`
-        text-xl
-        md:text-2xl
-        font-bold
         text-secondary
         m-1
     `};

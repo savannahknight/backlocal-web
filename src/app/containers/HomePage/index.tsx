@@ -22,9 +22,9 @@ export function HomePage() {
     return <PageContainer>
         <Navbar />
         <TopSection />
-        <Marginer direction="vertical" margin="12em" />
+        <Marginer direction="vertical" margin="20em" />
         <ChooseUs />
-        <Marginer direction="vertical" margin="12em" />
+        <Marginer direction="vertical" margin="10em" />
         <OurPricing />
     </PageContainer>
 }

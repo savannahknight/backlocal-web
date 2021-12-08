@@ -11,6 +11,8 @@ import {
   import CommunityImg from "../../../assets/images/community.png";
   import AffordabilityImg from "../../../assets/images/affordability.png";
   import GrowthImg from "../../../assets/images/growth.png";
+  import { SCREENS } from "../../components/responsive";
+  import LineImg from "../../../assets/images/line-dot.svg";
 
   const Container = styled.div`
     ${tw`
@@ -18,17 +20,19 @@ import {
       flex
       flex-col
       items-center
-      pt-3
+      pt-6
       pb-3
       lg:pt-6
       lg:pb-6
     `};
+      @media (min-width: ${SCREENS.xl}) {
+        mt-12
+      }
   `;
   
   const Title = styled.h2`
+    font-size: 72px;
     ${tw`
-      text-3xl
-      lg:text-5xl
       text-primary
       font-extrabold
     `};
@@ -39,8 +43,6 @@ import {
       flex
       justify-evenly
       flex-wrap
-      mt-7
-      lg:mt-16
     `};
   `;
   
@@ -92,11 +94,21 @@ import {
         max-width: fit-content;
     }
   `;
-  
+  const Line = styled.span`
+    ${tw`
+      pt-5
+    `};
+    img {
+        width: 100%;
+        height: 100%;
+        max-width: fit-content;
+    }
+  `;
   export function ChooseUs() {
     return (
       <Container>
         <Title>Why Choose Us</Title>
+        <Line><img src={LineImg} /></Line>
         <StepsContainer>
           <StepContainer>
             <Step>

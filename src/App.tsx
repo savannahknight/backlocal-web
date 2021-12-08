@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import './App.css';
 import { AboutUs } from './app/containers/AboutUs';
-// import { Contact } from './app/containers/Contact';
+import { Contact } from './app/containers/Contact';
 import { HomePage } from './app/containers/HomePage';
 
 const AppContainer = styled.div`
@@ -31,7 +31,7 @@ function App() {
      <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutUs />} />
-          {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </AppContainer>
   );

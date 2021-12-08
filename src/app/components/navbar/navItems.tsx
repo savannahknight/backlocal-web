@@ -19,17 +19,16 @@ const ListContainer = styled.ul`
 
 const NavItem = styled.li<{ menu?: any }>`
   ${tw`
-        text-sm
-        md:text-base
-        text-secondary
-        font-medium
-        mr-1
-        md:mr-5
-        cursor-pointer
-        transition
-        duration-300
-        ease-in-out
-        hover:underline
+      text-2xl
+      md:text-2xl
+      text-secondary
+      mr-1
+      md:mr-5
+      cursor-pointer
+      transition
+      duration-300
+      ease-in-out
+      hover:underline
     `};
 
     ${({ menu }) =>
@@ -47,6 +46,7 @@ const NavItem = styled.li<{ menu?: any }>`
 const Image = styled.div`
    width: auto;
    ${tw`
+    p-1
     h-6
     md:h-9
    `};
@@ -89,10 +89,10 @@ export function NavItems() {
         <a href="/contact">Contact</a>
       </NavItem>
       <Image>
-            <a href="linkedin.com"><img src={LinkedInImg} /></a>
+            <a href="https://www.linkedin.com/company/ibacklocal/"><img src={LinkedInImg} /></a>
       </Image>
       <Image>
-            <img src={InstagramImg} />
+            <a href="https://www.instagram.com/findlocal_utah/"><img src={InstagramImg} /></a>
       </Image>
     </ListContainer>
   );

@@ -9,15 +9,15 @@ interface IButtonProps {
 }
 
 const BaseButton = styled.button`
+    border-radius: 36px;
+    font-size: 18px;
     ${tw`
-        pl-5
-        pr-5
+        pl-8
+        pr-8
         pt-3
         pb-3
         outline-none
-        rounded-md
         text-white
-        text-xs
         font-semibold
         border-transparent
         border-2
