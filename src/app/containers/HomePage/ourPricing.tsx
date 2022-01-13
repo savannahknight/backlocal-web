@@ -101,7 +101,6 @@ import React from "react";
     border-radius: 36px;
     ${tw`
       bg-danger
-      
       text-white
       items-center
       justify-center
