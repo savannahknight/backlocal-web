@@ -84,11 +84,14 @@ import React from "react";
   const StandaloneImg = styled.div`
     ${tw`
         w-full
+        
+        
+
     `};
     img {
         width: 100%;
         height: 100%;
-        
+        position: sticky
     }
     `;
   
@@ -153,7 +156,7 @@ import React from "react";
           </StepContainer>
         </StepsContainer>
         <StandaloneImg>
-        <img src={Blob2} />
+        <img src={Blob2}  />
         </StandaloneImg>
       </Container>
       

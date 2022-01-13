@@ -58,10 +58,11 @@ import React from "react";
   const Step = styled.div`
   box-shadow: 0 1.3px 12px -3px rgba(0, 0, 0, 0.4);
     ${tw`
-      bg-white
+      hover:bg-white
       flex
       flex-wrap
       rounded-2xl
+      hover:
       items-center
       justify-center
       pt-14
