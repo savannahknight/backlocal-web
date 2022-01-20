@@ -148,8 +148,10 @@ export function TopSection() {
             chain stores by integrating local store’s inventory with Google Merchant Store. 
             </Description>
             <ButtonsContainer>
+              <form action="/contact">
                 <Button text= "REQUEST A DEMO" />
                 {/* <Button theme="filled" text="Log In" /> */}
+                </form>
             </ButtonsContainer>
         </LeftContainer>
         <RightContainer>
