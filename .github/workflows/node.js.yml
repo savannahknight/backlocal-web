@@ -26,6 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     - run: npm install
     - run: CI='' npm run build
     - run: echo "$SSH_PRIVATE_KEY" > id
