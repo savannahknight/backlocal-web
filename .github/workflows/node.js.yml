@@ -28,3 +28,7 @@ jobs:
         cache: 'npm'
     - run: npm install
     - run: CI='' npm run build
+    - run: echo "$SSH_PRIVATE_KEY" > id
+    - run: chmod 0600 id
+    - run: scp -o StrictHostKeyChecking=no -P 20202 -i id -r build/* githubdeploy@back-local.com:/var/www/html/
+    
