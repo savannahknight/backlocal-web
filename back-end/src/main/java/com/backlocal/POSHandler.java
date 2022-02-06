@@ -47,6 +47,25 @@ public class POSHandler {
     return null;
   }
 
+  @GetMapping("/api/syncProducts")
+  public String syncProducts(Principal principal) {
+    if (principal instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      if (usernamePasswordAuthenticationToken.getPrincipal() instanceof User user) {
+
+        if (user == null)
+          return null;
+
+        POSCredential posCredential = dao.getPOSCredentialByUsername(user.getUsername());
+        if (posCredential.type() == POSCredentialType.RAIN) {
+          Set<Product> products = new Rain(posCredential).getProducts();
+          for (Product product : products)
+            System.out.println("\tproduct: " + product);
+        }
+      }
+    }
+    return null;
+  }
+
   //save pos system/ import inventory
   //refresh items
   //create a map of key: username and value: POSCredential obj
