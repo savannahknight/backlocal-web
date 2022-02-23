@@ -1,11 +1,12 @@
 package com.backlocal;
 
-public class Product {
-  private String title;
-  private String description;
-  private String sku;
-  private String variation;
-  private int price;
+public record Product (
+        String sku,
+        String title,
+        String description,
+        String landingPageURL, //todo: see if this is given in JSON string
+        String imageURL,
+        String variation,
+        Integer price ) {
 
 }
-//cookie JSESSIONID=b0035f0eefa26b21

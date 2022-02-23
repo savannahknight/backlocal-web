@@ -1,16 +1,29 @@
 package com.backlocal;
 
 import java.io.IOException;
+import java.net.Authenticator;
+import java.net.CookieHandler;
+import java.net.ProxySelector;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
-import okio.BufferedSink;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.springframework.http.HttpLogging;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 
 public class Rain implements POSSystem {
   private POSCredential credential;
@@ -24,12 +37,19 @@ public class Rain implements POSSystem {
     Set<Product> products = new HashSet<>();
     try {
       System.out.println("Rain username: " + credential.posUsername());
-      //String cookie=getCookie(credential.posUsername(), credential.posPassword());
-      String cookie = "PHPSESSID=dad421af56415a87c72127322e8c2fbd;";
+      String cookie=getCookie(credential.posUsername(), credential.posPassword());
+      //String cookie = "PHPSESSID=3644638209bca9353bad42539fa8830d;";
+      //String cookie = "PHPSESSID=a05a39933eb5009af8897d8221a5f608;";
       System.out.println("The cookie: " + cookie);
 
       String content = getContent(cookie);
       System.out.println("JSON String: " + content);
+
+      RainResponse rainResponse = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(content, RainResponse.class);
+      //convert rainResponse.data to Product and add it to the products set
+      String sku = rainResponse.data()[0].sku();
+      //new Product(sku, );
+      System.out.println("rainResponse: " + new ObjectMapper().writeValueAsString(rainResponse));
     }catch (IOException e ) {
       e.printStackTrace();
     }
@@ -38,13 +58,18 @@ public class Rain implements POSSystem {
   private String getCookie(String posUsername, String posPassword) throws IOException{
     final OkHttpClient client = new OkHttpClient.Builder().build();
     final String urlToScrape = "https://www.rainadmin.com/site-configuration/auth/login-process.php";
-    RequestBody requestBody = new FormBody(List.of("username", "password", "submitBtn"), List.of(posUsername, posPassword, "Login"));
-    final Request request = new Request.Builder().url(urlToScrape).post(requestBody).build();
+    RequestBody requestBody = new FormBody.Builder()
+            .add("username", posUsername)
+            .add("password", posPassword)
+            .add("submitBtn", "Login")
+            .build();
+    Request request = new Request.Builder().addHeader("Content-Type", "application/x-www-form-urlencoded").url(urlToScrape).post(requestBody).build();
     final Response response = client.newCall(request).execute();
-    return response.header("set-cookie");
-    //String.split(" ")[0] to get just th session id and not the http part on the end....stop split when there is a space
-    //use library Jackon to deserialize JSON
-    //RainResponse rainResponse = new ObjectMapper().readValue(jsonString, RainResponse.class);
+    String cookie = response.header("set-cookie");
+    String[] array = cookie.split(" ");
+
+    //System.out.println("message: " + response.code());
+    return array[0];
   }
   private String getContent(String cookie) throws IOException {
     final OkHttpClient client = new OkHttpClient.Builder().build();
