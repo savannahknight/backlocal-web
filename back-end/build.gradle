@@ -12,7 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'junit:junit:4.13.1'
+    implementation 'com.google.apis:google-api-services-content:v2-rev20220105-1.32.1'
+    implementation 'com.google.api-client:google-api-client:1.31.5'
     implementation 'junit:junit:4.13.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -22,6 +23,9 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation("com.squareup.okhttp3:okhttp:3.14.9")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.h2database:h2")
+    implementation("mysql:mysql-connector-java")
 
 }
 
