@@ -1,0 +1,5 @@
+curl \
+  'https://shoppingcontent.googleapis.com/content/v2.1/[MERCHANTID]/products?key=[YOUR_API_KEY]' \
+  --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
+  --header 'Accept: application/json' \
+  --compressed
