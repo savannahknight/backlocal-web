@@ -17,6 +17,8 @@ origins = [
 class Key(BaseModel):
     api: str
     keyPass: str
+    shopName: str
+    storeCode: str
 
 class Item(BaseModel):
     id: int
@@ -50,25 +52,44 @@ def show_data():
     return items
 
 
-@app.get("/create")
-def get_data():
+@app.post("/create")
+def put_data(apikey: Key):
     #api key: 0dcb9e6180891de29b549349a4b43cf8
     #api password: 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
-    # r = requests.get(f"https://{apikey.api}:{apikey.keyPass}@3b-shop.myshopify.com/admin/api/2022-01/products.json")
-    r = requests.get(f"https://0dcb9e6180891de29b549349a4b43cf8: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@3b-shop.myshopify.com/admin/api/2022-01/products.json")
+    r = requests.get(f"https://{apikey.api}:{apikey.keyPass}@{apikey.shopName}.myshopify.com/admin/api/2022-01/products.json")
+    # r = requests.get(f"https://0dcb9e6180891de29b549349a4b43cf8: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@3b-shop.myshopify.com/admin/api/2022-01/products.json")
+    
     resp = r.json() 
     for i in resp["products"]:
         title = i["title"]
         descrip = i["body_html"]
-        # vari_length = len(i["variants"])
-        price = i["variants"][0]["price"]
-        # if vari_length > 1:
-        #     for x in range(vari_length):
-        #         price = {i["variants"][x]["price"]}
-        #         title = {i["variants"][x]["title"]}
-        #         _id = {i["variants"][x]["id"]}
-        #         vari = {"price": price, "title": title, "id": _id}
-        #         vari_list.append(vari)
+        vari_length = len(i["variants"])
+        if vari_length > 1:
+            for x in range(vari_length):
+                quantity = i["variants"][x]["inventory_quantity"]
+                prod_id = i["variants"][x]["id"]
+                price = i["variants"][x]["price"]
+                prod_list.append(json.dumps({"store_code":apikey.storeCode,"id":prod_id, "prod_title":title, "prod_descrip": descrip, "quantity": quantity, "price":price}))
+        else:
+            for x in range(vari_length):
+                quantity = i["variants"][x]["inventory_quantity"]
+                prod_id = i["variants"][x]["id"]
+                price = i["variants"][x]["price"]
+        
+        prod_list.append(json.dumps({"store_code":"75599","id":prod_id, "prod_title":title, "prod_descrip": descrip, "quantity": quantity, "price":price}))
+
+    # for i in resp["products"]:
+    #     title = i["title"]
+    #     descrip = i["body_html"]
+    #     # vari_length = len(i["variants"])
+    #     price = i["variants"][0]["price"]
+    #     # if vari_length > 1:
+    #     #     for x in range(vari_length):
+    #     #         price = {i["variants"][x]["price"]}
+    #     #         title = {i["variants"][x]["title"]}
+    #     #         _id = {i["variants"][x]["id"]}
+    #     #         vari = {"price": price, "title": title, "id": _id}
+    #     #         vari_list.append(vari)
             
         
         new_item=models.Item(prod_name=title, prod_description=descrip, prod_price=price)
