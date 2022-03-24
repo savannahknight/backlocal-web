@@ -1,6 +1,9 @@
 import { Stack, StackProps, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as rds from "aws-cdk-lib/aws-rds";
+import * as apigateway from "aws-cdk-lib/aws-apigateway";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkBacklocalStack extends Stack {
@@ -16,6 +19,17 @@ export class CdkBacklocalStack extends Stack {
       },
       defaultDatabaseName: "backLocal",
       enableDataApi: true
+    });
+
+    const pythonLambda = new lambda.Function(this, 'pythonLambda', {
+      code: lambda.Code.fromAsset("../lambdas"),
+      handler: 'handler.handler',
+      runtime: lambda.Runtime.PYTHON_3_6,
+    });
+
+    const api = new apigateway.LambdaRestApi(this, "LambdaProxyApi", {
+      handler: pythonLambda,
+      proxy: false,
     });
   }
 }
