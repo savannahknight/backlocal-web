@@ -1,0 +1,136 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+	"net/http"
+	"net/http/httputil"
+	"time"
+)
+
+const password = "VENDOR_PASSWORD_HERE"
+
+func main() {
+	sessionResponse, err := defaultHTTPClient.Do(newSessionRequest())
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	defer func() { _ = sessionResponse.Body.Close() }()
+
+	if sessionResponse.StatusCode != 200 {
+		rawBody, _ := ioutil.ReadAll(sessionResponse.Body)
+		log.Panicf("unexpected session status code [%d]: [%s]", sessionResponse.StatusCode, string(rawBody))
+	}
+
+	session := readSessionIdentifier(sessionResponse)
+	if session == nil {
+		log.Panicf("missing PHP session identifier")
+	}
+
+	log.Println("Session ID:", session.Value)
+
+	loginResponse, err := defaultHTTPClient.Do(newLoginRequest(session))
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	defer func() { _ = loginResponse.Body.Close() }()
+
+	if loginResponse.StatusCode != 200 {
+		rawBody, _ := ioutil.ReadAll(loginResponse.Body)
+		log.Panicf("unexpected login status code [%d]: [%s]", loginResponse.StatusCode, string(rawBody))
+	}
+
+	contentResponse, err := defaultHTTPClient.Do(newContentRequest(session))
+	if loginResponse.StatusCode != 200 {
+		log.Panicf("unexpected content status code %d", contentResponse.StatusCode)
+	}
+
+	defer func() { _ = contentResponse.Body.Close() }()
+
+	raw, _ := httputil.DumpResponse(contentResponse, true)
+	log.Println(string(raw))
+}
+
+func newSessionRequest() *http.Request {
+	request, _ := http.NewRequest("GET", "https://www.rainadmin.com/site-configuration/auth/login-process.php", nil)
+
+	// request.Header.Set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36")
+	// request.Header.Set("Accept", "text/html")
+	// request.Header.Set("Accept-Language", "en-US,en;q=0.5")
+	// request.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	// request.Header.Set("DNT", "1")
+	// request.Header.Set("Connection", "keep-alive")
+	// request.Header.Set("Upgrade-Insecure-Requests", "1")
+	// request.Header.Set("Sec-Fetch-Dest", "document")
+	// request.Header.Set("Sec-Fetch-Mode", "navigate")
+	// request.Header.Set("Sec-Fetch-Site", "none")
+	// request.Header.Set("Sec-Fetch-User", "?1")
+
+	return request
+}
+func readSessionIdentifier(response *http.Response) *http.Cookie {
+	for _, cookie := range response.Cookies() {
+		if cookie.Name == "PHPSESSID" {
+			return cookie
+		}
+	}
+
+	return nil
+}
+
+func newLoginRequest(session *http.Cookie) *http.Request {
+	buffer := bytes.NewBufferString(fmt.Sprintf("username=Ted&password=%s&submitBtn=Login", password))
+	request, _ := http.NewRequest("POST", "https://www.rainadmin.com/site-configuration/auth/login-process.php", buffer)
+	request.AddCookie(session)
+	// request.Header.Set("authority", "www.rainadmin.com")
+	// request.Header.Set("pragma", "no-cache")
+	// request.Header.Set("cache-control", "no-cache")
+	// request.Header.Set("sec-ch-ua", `" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"`)
+	// request.Header.Set("sec-ch-ua-mobile", "?0")
+	// request.Header.Set("sec-ch-ua-platform", "macOS")
+	// request.Header.Set("upgrade-insecure-requests", "1")
+	// request.Header.Set("origin", "https://www.rainadmin.com")
+	request.Header.Set("content-type", "application/x-www-form-urlencoded")
+	// request.Header.Set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36")
+	// request.Header.Set("accept", "text/html") // request.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+	// request.Header.Set("sec-fetch-site", "same-origin")
+	// request.Header.Set("sec-fetch-mode", "navigate")
+	// request.Header.Set("sec-fetch-user", "?1")
+	// request.Header.Set("sec-fetch-dest", "document")
+	// request.Header.Set("referer", "https://www.rainadmin.com/site-configuration/auth/login.php")
+	// request.Header.Set("accept-language", "en-US,en;q=0.9")
+
+	raw, _ := httputil.DumpRequest(request, true)
+	log.Println(string(raw))
+
+	return request
+}
+func newContentRequest(session *http.Cookie) *http.Request {
+	const contentURL = "https://www.rainadmin.com/site-configuration/products/api/index.php?limit=100&page=1&storeLocationId=28405&ids=48702623,48702624,48702631,48702634,48702665,48702677,48702680,48702700,48702714,48702715,48702725,48702757,48702758,48702759,48702760,48702762,48702766,48702772,48702786,48702908,48702924,48702942,48702950,48703000,48703001,48703013,48703021,48703023,49600642,49625271,49625392,51114085,51484841,52771985,54922550,57893535,58101022,58446650,58950638"
+	request, _ := http.NewRequest("GET", contentURL, nil)
+	request.AddCookie(session)
+	return request
+}
+
+var defaultHTTPClient = &http.Client{
+	Timeout: time.Second * 10,
+	Transport: &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 1 * time.Second,
+		}).DialContext,
+		DisableKeepAlives:      true,
+		MaxIdleConns:           32,
+		MaxIdleConnsPerHost:    16,
+		MaxConnsPerHost:        64,
+		IdleConnTimeout:        time.Second * 120,
+		ResponseHeaderTimeout:  time.Second * 15,
+		MaxResponseHeaderBytes: 4096,
+		ForceAttemptHTTP2:      false,
+	},
+}
